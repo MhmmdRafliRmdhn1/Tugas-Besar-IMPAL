@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TripSaver — Budget Perjalanan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="bg-decor"><div class="blob b1"></div><div class="blob b2"></div></div>
+
+<div class="app-shell" id="app-shell">
+  <!-- SIDEBAR (landscape) -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-logo">✈</div>
+      <div><h1>TripSaver</h1><p>Budget Perjalanan</p></div>
+    </div>
+    <div class="user-card">
+      <div class="avatar" id="user-avatar">T</div>
+      <div class="user-meta"><b id="user-name">Traveler</b><small id="user-email">-</small></div>
+    </div>
+    <nav class="side-nav">
+      <button class="side-btn active" data-nav="pg-home" onclick="setNav(this,'pg-home')">🏠 <span>Home</span></button>
+      <button class="side-btn" data-nav="pg-laporan" onclick="setNav(this,'pg-laporan')">📊 <span>Laporan</span></button>
+      <button class="side-btn" data-nav="pg-tambah" onclick="setNav(this,'pg-tambah')">➕ <span>Tambah</span></button>
+      <button class="side-btn" data-nav="pg-pesan" onclick="setNav(this,'pg-pesan')">💬 <span>Pesan</span><em class="badge" id="badge-pesan" style="display:none">0</em></button>
+      <button class="side-btn" data-nav="pg-catatan" onclick="setNav(this,'pg-catatan')">📝 <span>Catatan</span></button>
+      <button class="side-btn" data-nav="pg-trip" onclick="setNav(this,'pg-trip')">🗓 <span>Trip</span></button>
+    </nav>
+    <button class="logout-btn" onclick="doLogout()">↩ <span>Keluar</span></button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="main">
+
+    <!-- WELCOME -->
+    <div id="pg-welcome" class="page active">
+      <div class="auth-wrap">
+        <div class="auth-card hero">
+          <div class="auth-left">
+            <div class="mini-brand">✈ TripSaver</div>
+            <h2>Kelola Budget<br/>Perjalananmu<br/>dengan Mudah.</h2>
+            <p>Catat pemasukan & pengeluaran, pantau sisa anggaran, dan nikmati setiap trip tanpa khawatir.</p>
+            <div class="hero-points"><span>✔ Laporan pie-chart</span><span>✔ Multi-trip</span><span>✔ Catatan & pesan</span></div>
+          </div>
+          <div class="auth-right center">
+            <h3>Selamat Datang di TripSaver</h3>
+            <p class="muted">Silakan masuk atau buat akun baru untuk mulai.</p>
+            <button class="btn-primary" onclick="goto('pg-login')">Login</button>
+            <button class="btn-ghost" onclick="goto('pg-register')">Registrasi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="pg-login" class="page">
+      <div class="auth-wrap">
+        <div class="auth-card">
+          <div class="auth-left">
+            <div class="mini-brand">✈ TripSaver</div>
+            <h2>Selamat Datang<br/>Kembali!</h2>
+            <p>Masuk untuk melanjutkan petualangan hematmu.</p>
+          </div>
+          <div class="auth-right">
+            <h3>Login</h3>
+            <label>Email</label>
+            <input id="login-email" class="field" type="email" placeholder="nama@email.com" />
+            <label>Password</label>
+            <input id="login-pass" class="field" type="password" placeholder="••••••••" />
+            <button class="btn-primary" onclick="doLogin()">Masuk</button>
+            <p class="switch">Belum punya akun? <a href="#" onclick="goto('pg-register');return false;">Daftar di sini</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="pg-register" class="page">
+      <div class="auth-wrap">
+        <div class="auth-card">
+          <div class="auth-left">
+            <div class="mini-brand">✈ TripSaver</div>
+            <h2>Buat Akun<br/>Gratis.</h2>
+            <p>Satu akun untuk semua trip dan laporan keuanganmu.</p>
+          </div>
+          <div class="auth-right">
+            <h3>Registrasi</h3>
+            <label>Nama</label>
+            <input id="reg-nama" class="field" type="text" placeholder="Nama lengkap" />
+            <label>Email</label>
+            <input id="reg-email" class="field" type="email" placeholder="nama@email.com" />
+            <div class="grid2">
+              <div><label>Password</label><input id="reg-pass" class="field" type="password" placeholder="Min. 4 karakter" /></div>
+              <div><label>Konfirmasi</label><input id="reg-pass2" class="field" type="password" placeholder="Ulangi password" /></div>
+            </div>
+            <button class="btn-primary" onclick="doRegister()">Daftar</button>
+            <p class="switch">Sudah punya akun? <a href="#" onclick="goto('pg-login');return false;">Login</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INPUT TRIP -->
+    <div id="pg-input-trip" class="page">
+      <div class="auth-wrap">
+        <div class="auth-card">
+          <div class="auth-left">
+            <div class="mini-brand">✈ TripSaver</div>
+            <h2>Mau Kemana<br/>nih...</h2>
+            <p>Buat trip pertamamu dan tentukan budget perjalanannya.</p>
+          </div>
+          <div class="auth-right">
+            <h3>Trip Baru</h3>
+            <label>Nama Kota</label>
+            <input id="inp-kota" class="field" type="text" placeholder="cth: Bandung" />
+            <label>Tanggal</label>
+            <input id="inp-tanggal" class="field" type="text" placeholder="cth: 23 Januari 2025" />
+            <label>Budget (Rp)</label>
+            <input id="inp-budget" class="field" type="number" placeholder="cth: 5000000" />
+            <button class="btn-primary" onclick="konfirmasiTrip()">Konfirmasi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOME -->
+    <div id="pg-home" class="page">
+      <div class="content">
+        <div class="hero-banner">
+          <div class="hero-info">
+            <div class="crumb">HOME / <b id="home-kota">Bandung</b></div>
+            <p class="lbl">Sisa Anggaran</p>
+            <h1 id="home-budget">Rp5.400.000</h1>
+            <div class="budget-bar"><div class="budget-fill" id="budget-fill"></div></div>
+            <p class="range"><span id="home-range">23 Januari 2025</span> · <b id="home-sisa">Sisa: Rp 5.400.000</b></p>
+          </div>
+          <div class="hero-side">
+            <button class="icon-btn" onclick="goto('pg-trip')" title="Kelola Trip">🗓</button>
+            <div class="pct-card">Terpakai<br/><b id="pct-used">0%</b></div>
+          </div>
+        </div>
+        <div class="notif-bar">💡 <p>Anda telah menggunakan <b id="pct-used-2">0%</b> dari anggaran. Gunakan anggaran dengan bijak agar perjalananmu lebih menyenangkan!</p></div>
+        <div class="home-grid">
+          <div>
+            <div class="sec-title">Kategori</div>
+            <div class="kat-grid">
+              <div class="kat-box" onclick="openTambah('Makanan')"><i>🍔</i><span>Makanan</span></div>
+              <div class="kat-box" onclick="openTambah('Transportasi')"><i>🚌</i><span>Transport</span></div>
+              <div class="kat-box" onclick="openTambah('Hotel')"><i>🏨</i><span>Hotel</span></div>
+              <div class="kat-box" onclick="openTambah('Hiburan')"><i>🎡</i><span>Hiburan</span></div>
+              <div class="kat-box" onclick="openTambah('Belanja')"><i>🛍️</i><span>Belanja</span></div>
+              <div class="kat-box" onclick="openTambah('Lainnya')"><i>➕</i><span>Lainnya</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="sec-title">Transaksi Terakhir <a href="#" onclick="setNavDirect('pg-laporan');return false;">Lihat semua →</a></div>
+            <div id="home-transaksi" class="trx-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAPORAN -->
+    <div id="pg-laporan" class="page">
+      <div class="content">
+        <div class="page-head"><h2>Laporan Keuangan</h2>
+          <div class="seg"><button class="seg-btn active" onclick="switchLapTab(this,'pemasukan')">Pemasukan</button><button class="seg-btn" onclick="switchLapTab(this,'pengeluaran')">Pengeluaran</button></div>
+        </div>
+        <div id="lap-pemasukan">
+          <div class="lap-grid">
+            <div class="card chart-card"><canvas id="chart-masuk"></canvas><div class="legend" id="legend-masuk"></div></div>
+            <div class="card"><div class="sec-title">Transaksi Pemasukan</div><div id="list-masuk" class="lap-list"></div></div>
+          </div>
+        </div>
+        <div id="lap-pengeluaran" style="display:none">
+          <div class="lap-grid">
+            <div class="card chart-card"><canvas id="chart-keluar"></canvas><div class="legend" id="legend-keluar"></div></div>
+            <div class="card"><div class="sec-title">Transaksi Pengeluaran</div><div id="list-keluar" class="lap-list"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAMBAH -->
+    <div id="pg-tambah" class="page">
+      <div class="content narrow">
+        <div class="page-head"><h2>Tambah Transaksi</h2>
+          <div class="seg"><button class="seg-btn active" id="tab-masuk-btn" onclick="switchTambahTab(this,'pemasukan')">Pemasukan</button><button class="seg-btn" id="tab-keluar-btn" onclick="switchTambahTab(this,'pengeluaran')">Pengeluaran</button></div>
+        </div>
+        <div class="card form-card">
+          <div id="form-pemasukan" class="t-form">
+            <label>Masukkan Nominal (Rp)</label>
+            <input id="inp-nominal-masuk" class="field big" type="number" placeholder="0" />
+            <label>Deskripsi (opsional)</label>
+            <input id="inp-desc-masuk" class="field" type="text" placeholder="cth: Top up / gaji" />
+            <button class="btn-primary" onclick="tambahTransaksi('pemasukan')">Konfirmasi</button>
+          </div>
+          <div id="form-pengeluaran" class="t-form" style="display:none">
+            <label>Kategori</label>
+            <div class="kat-grid mini" id="kat-selector">
+              <div class="kat-box kat-sel-item selected" data-kat="Makanan"><i>🍔</i><span>Makanan</span></div>
+              <div class="kat-box kat-sel-item" data-kat="Transportasi"><i>🚌</i><span>Transport</span></div>
+              <div class="kat-box kat-sel-item" data-kat="Hotel"><i>🏨</i><span>Hotel</span></div>
+              <div class="kat-box kat-sel-item" data-kat="Hiburan"><i>🎡</i><span>Hiburan</span></div>
+              <div class="kat-box kat-sel-item" data-kat="Belanja"><i>🛍️</i><span>Belanja</span></div>
+              <div class="kat-box kat-sel-item" data-kat="Lainnya"><i>➕</i><span>Lainnya</span></div>
+            </div>
+            <label>Masukkan Nominal (Rp)</label>
+            <input id="inp-nominal-keluar" class="field big" type="number" placeholder="0" />
+            <label>Deskripsi (opsional)</label>
+            <input id="inp-desc-keluar" class="field" type="text" placeholder="cth: Kuliner / tiket" />
+            <button class="btn-primary" onclick="tambahTransaksi('pengeluaran')">Konfirmasi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="pg-success" class="page">
+      <div class="content narrow center-col">
+        <div class="card success-card"><div class="success-circle">✔</div><h3 id="success-msg">Pemasukan berhasil</h3><p class="muted">Data tersimpan. Mengalihkan ke Home...</p></div>
+      </div>
+    </div>
+
+    <!-- PESAN -->
+    <div id="pg-pesan" class="page">
+      <div class="content narrow"><div class="page-head"><h2>Pesan</h2></div>
+        <div id="pesan-list" class="stack"></div>
+      </div>
+    </div>
+
+    <!-- CATATAN -->
+    <div id="pg-catatan" class="page">
+      <div class="content narrow"><div class="page-head"><h2>Catatan</h2><button class="btn-primary sm" onclick="openAddCatatan()">+ Tambah</button></div>
+        <div id="catatan-list" class="stack"></div>
+      </div>
+    </div>
+
+    <!-- TRIP -->
+    <div id="pg-trip" class="page">
+      <div class="content narrow"><div class="page-head"><h2>Trip</h2>
+        <div class="h-acts"><button class="chip-btn" onclick="goto('pg-edit-trip')">✎ Edit</button><button class="chip-btn" onclick="goto('pg-hapus-trip')">🗑 Hapus</button><button class="chip-btn primary" onclick="goto('pg-tambah-trip')">+ Tambah</button></div></div>
+        <div class="card"><div id="trip-list" class="trip-lines"></div></div>
+      </div>
+    </div>
+
+    <!-- HAPUS TRIP -->
+    <div id="pg-hapus-trip" class="page">
+      <div class="content narrow"><div class="page-head"><h2>Hapus Trip</h2></div>
+        <div class="card"><div id="hapus-trip-list" class="trip-lines check"></div>
+        <button class="btn-danger" onclick="hapusTrip()">Hapus yang dipilih</button>
+        <button class="btn-ghost" onclick="goto('pg-trip')">Kembali</button></div>
+      </div>
+    </div>
+
+    <!-- EDIT TRIP -->
+    <div id="pg-edit-trip" class="page">
+      <div class="content narrow"><div class="page-head"><h2>Edit Trip</h2></div>
+        <div class="card form-card">
+          <div class="prev-box"><small>Sebelumnya :</small><b id="seb-kota">Bandung</b><span id="seb-info">23 Januari 2025 · Rp 5.400.000</span></div>
+          <label>Kota</label><input id="edit-kota" class="field" type="text" placeholder="Kota" />
+          <label>Tanggal</label><input id="edit-tanggal" class="field" type="text" placeholder="Tanggal" />
+          <label>Budget</label><input id="edit-budget" class="field" type="number" placeholder="Budget" />
+          <label>Deskripsi</label><input id="edit-desc" class="field" type="text" placeholder="Deskripsi" />
+          <button class="btn-primary" onclick="konfirmasiEdit()">Konfirmasi</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAMBAH TRIP -->
+    <div id="pg-tambah-trip" class="page">
+      <div class="content narrow"><div class="page-head"><h2>Tambah Trip</h2></div>
+        <div class="card form-card">
+          <label>Kota</label><input id="new-kota" class="field" type="text" placeholder="Kota" />
+          <label>Tanggal</label><input id="new-tanggal" class="field" type="text" placeholder="Tanggal" />
+          <label>Budget</label><input id="new-budget" class="field" type="number" placeholder="Budget" />
+          <label>Deskripsi</label><input id="new-desc" class="field" type="text" placeholder="Deskripsi" />
+          <button class="btn-primary" onclick="tambahTrip()">Konfirmasi</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="modal-catatan" class="modal" style="display:none">
+  <div class="modal-card"><h3>Tambah Catatan</h3>
+    <textarea id="inp-catatan" rows="4" placeholder="Tulis catatan..."></textarea>
+    <button class="btn-primary" onclick="saveCatatan()">Simpan</button>
+    <button class="btn-ghost" onclick="closeModal('modal-catatan')">Batal</button>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
